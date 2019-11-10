@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <condition name = "number of iterations" valid ="True" value = "100">
+  </condition>
+  <condition name = "length" valid = "False" value = "0.5">
+  </condition>
+  <condition name = "diff" valid = "True" value = "10">
+  </condition>
+</configuration>
