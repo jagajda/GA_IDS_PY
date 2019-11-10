@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<algorithm_parameters>
-  <parameter population_size = "200" max_lifetime = "5"></parameter>
-</algorithm_parameters>

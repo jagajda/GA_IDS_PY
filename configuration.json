@@ -1,0 +1,31 @@
+{ "conditions":
+	[
+		{
+			"name" : "number of iterations",
+			"valid" : "True",
+			"value" : "100"
+		},
+		{
+			"name" : "length",
+			"valid" : "False",
+			"value" : "0.5"
+		},
+		{
+			"name" : "diff",
+			"valid" : "True",
+			"value" : "10"
+		}
+	],
+"parameters":
+	[
+		{
+			"name" : "population_size",
+			"value" : "200"
+		},
+
+		{
+			"name" : "max_lifetime",
+			"value" : "5"
+		}
+	]
+}
