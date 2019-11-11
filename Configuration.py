@@ -24,3 +24,19 @@ class Configuration:
         self._population_size = int(data['parameters'][0]['value'])
         self._max_lifetime = int(data['parameters'][0]['value'])
 
+
+    def calculate_conditions(self, iterations, diff_between_solutions, length_between_solutions):
+        for i in self._conditions:
+            if i._name == 'number of iterations':
+                if i._valid == 'True':
+                    if iterations > i._value:
+                        return False
+            if i._name == 'diff':
+                if i._valid == 'True':
+                    if diff_between_solutions < i._value:
+                        return False
+            if i._name == 'Length':
+                if i._valid == 'True':
+                    if length_between_solutions < i._value:
+                        return False
+            return True
