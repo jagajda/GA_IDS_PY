@@ -27,5 +27,16 @@
 			"name" : "max_lifetime",
 			"value" : "5"
 		}
+	],
+"attacks":
+	[
+		{
+			"ip_src" : "sample ip",
+			"ip_dest" : "sample dest",
+			"network" : "IP",
+			"transport" : "TCP",
+			"src_port" : "sample port",
+            "dest_port" : "sample port"
+		}
 	]
 }
