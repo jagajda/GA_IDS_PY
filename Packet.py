@@ -32,24 +32,26 @@ class Packet:
 
 def get_packets_from_file(packet_filename):
     packet_list =[]
-    try:
-        with open(packet_filename, 'r+') as f:
-            for line in f:
+    with open(packet_filename, 'r+') as f:
+        for line in f:
+            try:
                 splitted = line.split()
-                ip_src = (splitted[6].split(':'))[0]
-                ip_dest = (splitted[8].split(':'))[0]
-                network = splitted[3]
-                transport = splitted [5]
-                src_port = (splitted[6].split(':'))[1]
-                dest_port = (splitted[8].split(':'))[1]
-                packet_list.append(Packet(ip_src, ip_dest, network, transport, src_port, dest_port))
-    except Exception as e:
-        print(e)
+                ip_src = (splitted[5].split(':'))[0]
+                ip_dest = (splitted[7].split(':'))[0]
+                network = splitted[2]
+                transport = splitted [4]
+                src_port = (splitted[5].split(':'))[1]
+                dest_port = (splitted[7].split(':'))[1]
+                if len(splitted >= 8):
+                    packet_list.append(Packet(ip_src, ip_dest, network, transport, src_port, dest_port))
+            except Exception as e:
+                print(e)
     return packet_list
 
-def update_attacks(packet_list, packet_from_conf_file):
-    for p in packet_list:
-        if p == packet_from_conf_file:
-            p._attack = True
-        else:
-            p._attack = False
+def update_attacks(packet_list, packets_from_conf_file):
+    for attack in packets_from_conf_file:
+        for p in packet_list:
+            if p == attack:
+                p._attack = True
+            else:
+                p._attack = False
