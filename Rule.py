@@ -1,4 +1,5 @@
 import random
+import Packet
 
 ip_addr_set = [str(i) for i in range(1, 255)]
 ip_addr_set += ['*' for i in range(255,510)]
@@ -28,7 +29,7 @@ port_set = ['microsoft_ds', '48448', 'https', '50195', '60278', '55592', '35065'
             '60289', '60493', '58180', '53068', '53708', '53528', '50208', '62745', '20037', '60290', '20038', '60494', \
             '49780', '56537', '19757', '19705', '*', '-']
 
-network_set = ['IP', '*0, -']
+network_set = ['IP', '*', '-']
 
 class Rule:
     def __init__(self, ip_src='', ip_dest='', transport='', src_port='', dest_port='', network = ''):
@@ -60,18 +61,120 @@ class Rule:
         else:
             return True
 
-    # def validate(self, packet_list):
-    #     for p in packet_list:
+    def validate(self, packet_list):
+        detected = False
+        for p in packet_list:
+            for i,j in zip(self._ip_src.split('.'), p._ip_src.split('.')):
+                if i == j or i == '*':
+                    detected = True
+                    self.value += p.get_value(detected, self)
+                    continue
+                else:
+                    detected = False
+            for i,j in zip(self._ip_dest.split('.'), p._ip_dest.split('.')):
+                if i == j or i == '*':
+                    detected = True
+                    self.value += p.get_value(detected, self)
+                    continue
+                else:
+                    detected = False
+            if self._src_port == '*' or p._src_port == self._src_port or self._dest_port == '*' or self._dest_port == p._dest_port:
+                detected = True
+                self.value += p.get_value(detected, self)
+                continue
+            elif self._src_port == '-' or self._dest_port == '-':
+                detected = False
+            else:
+                detected = False
+            if self._network == '*' or self._network == p._network:
+                detected = True
+                self.value += p.get_value(detected, self)
+                continue
+            elif self._network == '-':
+                detected = False
+            else:
+                detected = False
+            if self._transport == '*' or self._transport == p._transport:
+                detected = True
+                self.value += p.get_value(detected, self)
+                continue
+            elif self._transport == '-':
+                detected = False
+            else:
+                detected = False
+            self.value += p.get_value(detected, self)
+
+    def mutation(self, type):
+        if type == 1:
+            ip_src = self._ip_src.split('.')
+            if ip_src[3] == '*':
+                ip_src[2] = '*'
+            elif ip_src[2] == '*':
+                ip_src[1] = '*'
+            elif ip_src[1] == '*':
+                ip_src[0] = '*'
+            self._ip_src = ip_src[3] + '.' + ip_src[2] + '.' + ip_src[1] + '.' + ip_src[0]
+        elif type == 2:
+            ip_dest = self._ip_dest.split('.')
+            if ip_dest[3] == '*':
+                ip_dest[2] = '*'
+            elif ip_dest[2] == '*':
+                ip_dest[1] = '*'
+            elif ip_dest[1] == '*':
+                ip_dest[0] = '*'
+            self._ip_dest = ip_dest[3] + '.' + ip_dest[2] + '.' + ip_dest[1] + '.' + ip_dest[0]
+        elif type == 3:
+            self._dest_port = random.choice([self._dest_port, '*', '-'])
+            self._src_port = random.choice([self._src_port, '*', '-'])
 
 
 def generate_initial_rules(self, population_size):
     act_num_of_rules = 0
     population = []
     while (act_num_of_rules <= population_size):
-        new_rule = Rule(ip_src=(random.choice(ip_addr_set) + '.' + random.choice(ip_addr_set) + '.' + \
-                                random.choice(ip_addr_set) + '.' + random.choice(ip_addr_set)), \
-                        ip_dest=(random.choice(ip_addr_set) + '.' + random.choice(ip_addr_set) + '.' + \
-                                random.choice(ip_addr_set) + '.' + random.choice(ip_addr_set)), \
+        ip_first = ''
+        ip_second = ''
+        ip_third = ''
+        ip_fourth = ''
+        ip_first = random.choice(ip_addr_set)
+        if(ip_first == '*'):
+            ip_second = '*'
+            ip_third = '*'
+            ip_fourth = '*'
+        else:
+            ip_second = random.choice(ip_addr_set)
+        if(ip_second == '*'):
+            ip_third = '*'
+            ip_fourth = '*'
+        else:
+            ip_third = random.choice(ip_addr_set)
+        if(ip_third == '*'):
+            ip_fourth = '*'
+        else:
+            ip_fourth = random.choice(ip_addr_set)
+        _ip_src = ip_first + '.' + ip_second + '.' + ip_third + '.' + ip_fourth
+        ip_first = ''
+        ip_second = ''
+        ip_third = ''
+        ip_fourth = ''
+        ip_first = random.choice(ip_addr_set)
+        if(ip_first == '*'):
+            ip_second = '*'
+            ip_third = '*'
+            ip_fourth = '*'
+        else:
+            ip_second = random.choice(ip_addr_set)
+        if(ip_second == '*'):
+            ip_third = '*'
+            ip_fourth = '*'
+        else:
+            ip_third = random.choice(ip_addr_set)
+        if(ip_third == '*'):
+            ip_fourth = '*'
+        else:
+            ip_fourth = random.choice(ip_addr_set)
+        _ip_dest = ip_first + '.' + ip_second + '.' + ip_third + '.' + ip_fourth
+        new_rule = Rule(ip_src=_ip_src, ip_dest= _ip_dest, \
                         dest_port= random.choice(port_set), \
                         src_port=random.choice(port_set), \
                         transport=random.choice(transport_set), \

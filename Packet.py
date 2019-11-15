@@ -1,3 +1,5 @@
+import Rule
+
 class Packet:
 
     def __init__(self, ip_src = '', ip_dest = '', network = '', transport = '', src_port = '', dest_port = '', attack = False):
@@ -29,6 +31,20 @@ class Packet:
             return False
         else:
             return True
+
+    def get_value(self, detected, rule):
+        if detected == True and self._attack == True:
+            rule._true_positive += 1
+            return 10
+        elif detected == True and self._attack == False:
+            rule._true_negative += 1
+            return -5
+        elif detected == False and self._attack == True:
+            rule._false_positive += 1
+            return -10
+        else:
+            rule._false_negative += 1
+            return 5
 
 def get_packets_from_file(packet_filename):
     packet_list =[]
