@@ -22,7 +22,9 @@ class Configuration:
         for i in data['conditions']:
             self._conditions.append(Condition(i['name'], i['valid'], float(i['value'])))
         self._population_size = int(data['parameters'][0]['value'])
-        self._max_lifetime = int(data['parameters'][0]['value'])
+        self._max_lifetime = int(data['parameters'][1]['value'])
+        self._crossover_percentage = int(data['parameters'][2]['value'])
+        self._mutation_percentage = int(data['parameters'][3]['value'])
 
 
     def calculate_conditions(self, iterations, diff_between_solutions, length_between_solutions):

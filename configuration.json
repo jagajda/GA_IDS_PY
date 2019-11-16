@@ -20,12 +20,27 @@
 	[
 		{
 			"name" : "population_size",
-			"value" : "200"
+			"value" : "40"
 		},
-
 		{
 			"name" : "max_lifetime",
 			"value" : "5"
+		},
+		{
+			"name" : "crossover",
+			"value" : "60"
+		},
+		{
+			"name" : "mutation",
+			"value" : "10"
+		},
+		{
+			"name" : "tournament_size",
+			"value" : "4"
+		},
+		{
+			"name" : "elite",
+			"value" : "60"
 		}
 	],
 "attacks":

@@ -1,0 +1,44 @@
+import random
+from Rule import *
+
+class Population:
+    def __init__(self, rule_list = []):
+        self._rule_list = rule_list
+        self._cross_list = []
+        self._mutation_list = []
+        self._next_generation = []
+
+    def cross_selection(self, configuration):
+        number_of_crossover = int(configuration._population_size * configuration._crossover_percentage/100)
+        act_num = 0
+        while(act_num < number_of_crossover):
+            tournament_list = []
+            for i in range(0, configuration._tournament_size):
+                already_on_list = False
+                chosen = random.choice(self._rule_list)
+                for r in tournament_list:
+                    if r == chosen:
+                        already_on_list = True
+                if not already_on_list:
+                    tournament_list.append(chosen)
+            self._cross_list.append(get_max(tournament_list))
+            act_num += 1
+
+    def mutation_selection(self, configuration):
+        number_of_mutation = int(configuration._population_size * configuration._mutation_percentage/100)
+        act_num = 0
+        while(act_num < number_of_mutation):
+            chosen = random.choice(self._rule_list)
+            chosen.mutation(random.randint(1, 3))
+
+    def crossover(self):
+        [a, b] = split(self._cross_list, 2)
+
+
+    def mutation(self):
+        for r in self._rule_list:
+            r.mutation()
+
+def split(l, n):
+    n = max(1, n)
+    return (l[i:i+n] for i in range(0, len(l), n))

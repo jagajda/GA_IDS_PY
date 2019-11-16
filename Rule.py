@@ -1,5 +1,5 @@
 import random
-import Packet
+from Packet import *
 
 ip_addr_set = [str(i) for i in range(1, 255)]
 ip_addr_set += ['*' for i in range(255,510)]
@@ -104,6 +104,14 @@ class Rule:
                 detected = False
             self.value += p.get_value(detected, self)
 
+    def evaluate_parameters(self):
+        self._fpr = self._false_positive/(self._false_positive + self._true_negative)
+        self._fnr = self._false_negative/(self._false_negative + self._true_positive)
+        self._tpr = self._true_positive/(self._true_positive + self._false_negative)
+        self._tnr = self._true_negative/(self._true_negative + self._false_positive)
+        self._accuracy = (self._true_positive + self._true_negative) / (self._true_positive + self._true_negative  + self._false_positive + self._false_negative)
+        self._precision = self._true_positive / (self._true_positive + self._false_positive)
+
     def mutation(self, type):
         if type == 1:
             ip_src = self._ip_src.split('.')
@@ -126,6 +134,13 @@ class Rule:
         elif type == 3:
             self._dest_port = random.choice([self._dest_port, '*', '-'])
             self._src_port = random.choice([self._src_port, '*', '-'])
+
+def get_max(list):
+    max = list[0]
+    for r in list:
+        if r._value > max:
+            max = r
+    return max
 
 
 def generate_initial_rules(self, population_size):

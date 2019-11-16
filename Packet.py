@@ -1,4 +1,4 @@
-import Rule
+from Rule import *
 
 class Packet:
 
@@ -37,13 +37,13 @@ class Packet:
             rule._true_positive += 1
             return 10
         elif detected == True and self._attack == False:
-            rule._true_negative += 1
+            rule._false_positive += 1
             return -5
         elif detected == False and self._attack == True:
-            rule._false_positive += 1
+            rule._false_negative += 1
             return -10
         else:
-            rule._false_negative += 1
+            rule._true_negative += 1
             return 5
 
 def get_packets_from_file(packet_filename):
