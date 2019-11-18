@@ -135,6 +135,9 @@ class Rule:
             self._dest_port = random.choice([self._dest_port, '*', '-'])
             self._src_port = random.choice([self._src_port, '*', '-'])
 
+    # def crossover(self, other):
+
+
 def get_max(list):
     max = list[0]
     for r in list:

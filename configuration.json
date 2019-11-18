@@ -40,18 +40,18 @@
 		},
 		{
 			"name" : "elite",
-			"value" : "60"
+			"value" : "30"
 		}
 	],
 "attacks":
 	[
 		{
-			"ip_src" : "sample ip",
-			"ip_dest" : "sample dest",
+			"ip_src" : "10.10.10.1",
+			"ip_dest" : "100.200.300.4",
 			"network" : "IP",
 			"transport" : "TCP",
-			"src_port" : "sample port",
-            "dest_port" : "sample port"
+			"src_port" : "2571",
+            "dest_port" : "https"
 		}
 	]
 }

@@ -14,7 +14,7 @@ class Packet:
     def __str__(self):
         return self._ip_src + '\t' + self._ip_dest + '\t' + self._network + '\t' + \
                self._transport + '\t' + self._src_port + '\t' + self._dest_port + '\t' + \
-               self._attack +'\n'
+               str(self._attack) +'\n'
 
     def __eq__(self, other):
         if self._ip_src != other._ip_src:
@@ -31,6 +31,13 @@ class Packet:
             return False
         else:
             return True
+
+    def get_str(self):
+        _str =''
+        _str += self._ip_src + '\t' + self._ip_dest + '\t' + self._network + '\t' + \
+               self._transport + '\t' + self._src_port + '\t' + self._dest_port + '\t' + \
+               str(self._attack) +'\n'
+        return _str
 
     def get_value(self, detected, rule):
         if detected == True and self._attack == True:
