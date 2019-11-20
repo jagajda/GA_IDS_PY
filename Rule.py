@@ -2,8 +2,25 @@ import random
 from Packet import *
 import copy
 
-ip_addr_set = [str(i) for i in range(1, 255)]
-ip_addr_set += ['*' for i in range(255,510)]
+ip_addr_set = ['10', '58', '107', '234', '189', '59', '190', '192', '241',\
+               '208', '131', '106', '66', '108', '54', '39', '152', '219', \
+               '114', '105', '37', '172', '217', '11', '174', '111', '110', \
+               '103', '36', '104', '101', '233', '102', '35', '100', '201', \
+               '168', '22', '1', '0', '162', '250', '5', '70', '78', '83', \
+               '96', '69', '33', '122', '64', '4', '254', '55', \
+               '169', '60', '90', '202', '88', '47', '61', \
+               '74', '125', '20', '117', '173', '194', '167', '2', '206', '124', \
+               '228', '52', '34', '251', '155', '113', '148', '139', '128', '253', \
+               '204', '79', '197', '200', '13', '91', '30', '142', '116', '205', \
+               '180', '87', '146', '150', '77', '198', '12', '97', '199', '244', \
+               '51', '48', '38', '140', '99', '21', '8', '195', '143', '127', \
+               '136', '94', '98', '144', '138', '132', '45', '16', '89', '120', \
+               '72', '151', '26', '133', '216', '141', '65', '154', '226', '123', \
+               '14', '209', '243', '164', '50', '23', '134', '3', '71', '235', \
+               '153', '165', '68', '170', '84', '130', '184', '27', '24', '166', \
+               '212', '255', '53']
+for i in range(1, len(ip_addr_set)):
+    ip_addr_set.append('*')
 
 transport_set = ['TCP', 'UDP', 'ICMP' '*', '-']
 port_set = ['microsoft_ds', '48448', 'https', '50195', '60278', '55592', '35065', 'http', '50111', '52243', '53479', \
@@ -61,6 +78,17 @@ class Rule:
             return False
         else:
             return True
+
+    def __str__(self):
+        _str = ''
+        _str += self._ip_src + '\t'
+        _str += self._ip_src + '\t'
+        _str += self._src_port + '\t'
+        _str += self._dest_port + '\t'
+        _str += self._network + '\t'
+        _str += self._transport + '\t'
+        _str += str(self._value) + '\n'
+        return _str
 
     def validate(self, packet_list):
         detected = False
@@ -214,7 +242,7 @@ def get_max(list):
     return max
 
 
-def generate_initial_rules(self, population_size):
+def generate_initial_rules(population_size):
     act_num_of_rules = 0
     population = []
     while (act_num_of_rules <= population_size):
@@ -265,10 +293,11 @@ def generate_initial_rules(self, population_size):
                         src_port=random.choice(port_set), \
                         transport=random.choice(transport_set), \
                         network=random.choice(network_set))
+        already_on_list =False
         for prev_rule in population:
             if prev_rule == new_rule:
-                del new_rule
-            else:
-                population.append(new_rule)
-                act_num_of_rules += 1
+                already_on_list = True
+        if not already_on_list:
+            population.append(new_rule)
+            act_num_of_rules += 1
     return population

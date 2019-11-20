@@ -59,14 +59,16 @@ def get_packets_from_file(packet_filename):
         for line in f:
             try:
                 splitted = line.split()
-                ip_src = (splitted[5].split(':'))[0]
-                ip_dest = (splitted[7].split(':'))[0]
-                network = splitted[2]
-                transport = splitted [4]
-                src_port = (splitted[5].split(':'))[1]
-                dest_port = (splitted[7].split(':'))[1]
-                packet_list.append(Packet(ip_src, ip_dest, network, transport, src_port, dest_port))
+                if len(splitted[5].split(':')) > 1 and len(splitted[7].split(':')) > 1:
+                    ip_src = (splitted[5].split(':'))[0]
+                    ip_dest = (splitted[7].split(':'))[0]
+                    network = splitted[2]
+                    transport = splitted [4]
+                    src_port = (splitted[5].split(':'))[1]
+                    dest_port = (splitted[7].split(':'))[1]
+                    packet_list.append(Packet(ip_src, ip_dest, network, transport, src_port, dest_port))
             except Exception as e:
+                print('here')
                 print(e)
     return packet_list
 

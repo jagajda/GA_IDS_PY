@@ -46,12 +46,28 @@
 "attacks":
 	[
 		{
-			"ip_src" : "10.10.10.1",
-			"ip_dest" : "100.200.300.4",
+			"ip_src" : "10.59.108.66",
+			"ip_dest" : "192.241.208.131",
 			"network" : "IP",
 			"transport" : "TCP",
-			"src_port" : "2571",
+			"src_port" : "60278",
             "dest_port" : "https"
+		},
+		{
+			"ip_src" : "192.168.22.1",
+			"ip_dest" : "192.168.0.1",
+			"network" : "IP",
+			"transport" : "UDP",
+			"src_port" : "19756",
+            "dest_port" : "19704"
+		},
+		{
+			"ip_src" : "10.189.59.190",
+			"ip_dest" : "10.58.105.234",
+			"network" : "IP",
+			"transport" : "TCP",
+			"src_port" : "40210",
+            "dest_port" : "microsoft_ds"
 		}
 	]
 }

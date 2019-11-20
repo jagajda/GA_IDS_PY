@@ -11,7 +11,7 @@ def main():
     with open(output_fpath, 'w+') as f:
         for packet in packets:
             str = packet.summary()
-            if len(str.split()) > 8:
+            if len(str.split()) >= 9:
                 f.write(packet.summary() + '\n')
 
 if __name__ == '__main__':

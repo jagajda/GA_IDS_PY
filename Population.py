@@ -8,6 +8,22 @@ class Population:
         self._mutation_list = []
         self._next_generation = []
 
+    def __str__(self):
+        _str = ''
+        _str += 'Rule list size: '
+        _str += str(len(self._rule_list)) + '\n'
+        _str += 'Cross list size: '
+        _str += str(len(self._cross_list)) + '\n'
+        _str += 'Mutation list size: '
+        _str += str(len(self._mutation_list)) + '\n'
+        _str += 'Next generation list size: '
+        _str += str(len(self._next_generation)) + '\n'
+        return _str
+
+    def validate(self):
+        for r in self._rule_list:
+            r.validate()
+
     def cross_selection(self, configuration):
         number_of_crossover = int(configuration._population_size * configuration._crossover_percentage/100)
         act_num = 0
@@ -65,6 +81,13 @@ class Population:
 
     def generate_initial_population(self, rule_list):
         self._rule_list = rule_list
+
+    def print_best_rule(self):
+        print(self._rule_list[0])
+
+    def print_rule_list(self):
+        for r in self._rule_list:
+            print(r)
 
 def split(l, n):
     n = max(1, n)
