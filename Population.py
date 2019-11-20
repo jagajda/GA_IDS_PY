@@ -54,6 +54,18 @@ class Population:
         self._rule_list.sort(key=lambda x: x._value, reverse=True)
         self._next_generation = self._rule_list[:elite_size]
 
+    def update_current_population(self):
+        self._rule_list.clear()
+        self._rule_list = self._next_generation
+        self._next_generation.clear()
+
+    def get_best_rule(self):
+        self._rule_list.sort(key=lambda  x: x._value, reverse=True)
+        return self._rule_list[0]
+
+    def generate_initial_population(self, rule_list):
+        self._rule_list = rule_list
+
 def split(l, n):
     n = max(1, n)
     return (l[i:i+n] for i in range(0, len(l), n))

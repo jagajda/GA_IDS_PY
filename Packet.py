@@ -65,8 +65,7 @@ def get_packets_from_file(packet_filename):
                 transport = splitted [4]
                 src_port = (splitted[5].split(':'))[1]
                 dest_port = (splitted[7].split(':'))[1]
-                if len(splitted >= 8):
-                    packet_list.append(Packet(ip_src, ip_dest, network, transport, src_port, dest_port))
+                packet_list.append(Packet(ip_src, ip_dest, network, transport, src_port, dest_port))
             except Exception as e:
                 print(e)
     return packet_list

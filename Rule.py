@@ -1,5 +1,6 @@
 import random
 from Packet import *
+import copy
 
 ip_addr_set = [str(i) for i in range(1, 255)]
 ip_addr_set += ['*' for i in range(255,510)]
@@ -135,8 +136,75 @@ class Rule:
             self._dest_port = random.choice([self._dest_port, '*', '-'])
             self._src_port = random.choice([self._src_port, '*', '-'])
 
-    # def crossover(self, other):
-
+    def crossover(self, other, type):
+        first = copy.deepcopy(self)
+        second = copy.deepcopy(self)
+        if 1 <= type <= 7:
+            ip_src1 = self._ip_src.split('.')
+            ip_src2 = other._ip_src.split('.')
+            tmp = ip_src1
+            ip_src1[2] = ip_src2[2]
+            ip_src1[3] = ip_src2[3]
+            ip_src2[2] = tmp[2]
+            ip_src2[3] = tmp[3]
+            ip_dest1 = self._ip_dest.split('.')
+            ip_dest2 = other._ip_dest.split('.')
+            tmp = ip_src1
+            ip_dest1[2] = ip_src2[2]
+            ip_dest1[3] = ip_src2[3]
+            ip_dest2[2] = tmp[2]
+            ip_dest2[3] = tmp[3]
+            if (ip_src1[0] == '*'):
+                ip_src1[1] = '*'
+                ip_src1[2] = '*'
+                ip_src1[3] = '*'
+            if (ip_src1[1] == '*'):
+                ip_src1[2] = '*'
+                ip_src1[3] = '*'
+            if (ip_src1[2] == '*'):
+                ip_src1[3] = '*'
+            if (ip_src2[0] == '*'):
+                ip_src2[1] = '*'
+                ip_src2[2] = '*'
+                ip_src2[3] = '*'
+            if (ip_src2[1] == '*'):
+                ip_src2[2] = '*'
+                ip_src2[3] = '*'
+            if (ip_src2[2] == '*'):
+                ip_src2[3] = '*'
+            if (ip_dest1[0] == '*'):
+                ip_dest1[1] = '*'
+                ip_dest1[2] = '*'
+                ip_dest1[3] = '*'
+            if (ip_dest1[1] == '*'):
+                ip_dest1[2] = '*'
+                ip_dest1[3] = '*'
+            if (ip_dest1[2] == '*'):
+                ip_dest1[3] = '*'
+            if (ip_dest2[0] == '*'):
+                ip_dest2[1] = '*'
+                ip_dest2[2] = '*'
+                ip_dest2[3] = '*'
+            if (ip_dest2[1] == '*'):
+                ip_dest2[2] = '*'
+                ip_dest2[3] = '*'
+            if (ip_dest2[2] == '*'):
+                ip_dest2[3] = '*'
+            first._ip_src = ip_src1[0] + '.' + ip_src1[1] + '.' + ip_src1[2] + '.' + ip_src1[3]
+            first._ip_dest = ip_dest1[0] + '.' + ip_dest1[1] + '.' + ip_dest1[2] + '.' + ip_dest1[3]
+            second._ip_src = ip_src2[0] + '.' + ip_src2[1] + '.' + ip_src2[2] + '.' + ip_src2[3]
+            second._ip_dest = ip_dest1[0] + '.' + ip_dest2[1] + '.' + ip_dest2[2] + '.' + ip_dest2[3]
+            return [first, second]
+        else:
+            first = copy.deepcopy(self)
+            second = copy.deepcopy(other)
+            tmp_src_port = first._src_port
+            tmp_dest_port = first._dest_port
+            first._src_port = second._src_port
+            first._dest_port = second._dest_port
+            second._src_port = tmp_src_port
+            second._dest_port = tmp_dest_port
+            return [first, second]
 
 def get_max(list):
     max = list[0]
@@ -203,3 +271,4 @@ def generate_initial_rules(self, population_size):
             else:
                 population.append(new_rule)
                 act_num_of_rules += 1
+    return population
