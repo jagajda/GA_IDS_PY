@@ -33,7 +33,7 @@ class Packet:
             return True
 
     def get_str(self):
-        _str =''
+        _str = ''
         _str += self._ip_src + '\t' + self._ip_dest + '\t' + self._network + '\t' + \
                self._transport + '\t' + self._src_port + '\t' + self._dest_port + '\t' + \
                str(self._attack) +'\n'
@@ -42,7 +42,7 @@ class Packet:
     def get_value(self, detected, rule):
         if detected == True and self._attack == True:
             rule._true_positive += 1
-            return 10
+            return 100
         elif detected == True and self._attack == False:
             rule._false_positive += 1
             return -5
@@ -68,7 +68,6 @@ def get_packets_from_file(packet_filename):
                     dest_port = (splitted[7].split(':'))[1]
                     packet_list.append(Packet(ip_src, ip_dest, network, transport, src_port, dest_port))
             except Exception as e:
-                print('here')
                 print(e)
     return packet_list
 

@@ -19,7 +19,7 @@ ip_addr_set = ['10', '58', '107', '234', '189', '59', '190', '192', '241',\
                '14', '209', '243', '164', '50', '23', '134', '3', '71', '235', \
                '153', '165', '68', '170', '84', '130', '184', '27', '24', '166', \
                '212', '255', '53']
-for i in range(1, len(ip_addr_set)):
+for i in range(1, int(len(ip_addr_set)/4)):
     ip_addr_set.append('*')
 
 transport_set = ['TCP', 'UDP', 'ICMP' '*', '-']
@@ -79,15 +79,29 @@ class Rule:
         else:
             return True
 
+    def __hash__(self):
+        return hash(('_ip_src', self._ip_src, '_ip_dest', self._ip_dest, '_dest_port', self._dest_port,\
+                     '_src_port', self._src_port, '_transport', self._transport, '_network', self._network))
+
+    def __gt__(self, other):
+        if self._value > other._value:
+            return True
+        else:
+            return False
+
     def __str__(self):
         _str = ''
         _str += self._ip_src + '\t'
-        _str += self._ip_src + '\t'
+        _str += self._ip_dest + '\t'
         _str += self._src_port + '\t'
         _str += self._dest_port + '\t'
         _str += self._network + '\t'
         _str += self._transport + '\t'
-        _str += str(self._value) + '\n'
+        _str += 'Value= ' + str(self._value) + '\n'
+        _str += 'False positives= ' + str(self._false_positive) + '\n'
+        _str += 'False negatives= ' + str(self._false_negative) + '\n'
+        _str += 'True negatives= ' + str(self._true_negative) + '\n'
+        _str += 'True positives= ' + str(self._true_positive) + '\n'
         return _str
 
     def validate(self, packet_list):
@@ -96,20 +110,28 @@ class Rule:
             for i,j in zip(self._ip_src.split('.'), p._ip_src.split('.')):
                 if i == j or i == '*':
                     detected = True
-                    self.value += p.get_value(detected, self)
-                    continue
+                    break
                 else:
                     detected = False
+            if detected:
+                self._value += p.get_value(detected, self)
+                continue
+            else:
+                pass
             for i,j in zip(self._ip_dest.split('.'), p._ip_dest.split('.')):
                 if i == j or i == '*':
                     detected = True
-                    self.value += p.get_value(detected, self)
-                    continue
+                    break
                 else:
                     detected = False
+            if detected:
+                self._value += p.get_value(detected, self)
+                continue
+            else:
+                pass
             if self._src_port == '*' or p._src_port == self._src_port or self._dest_port == '*' or self._dest_port == p._dest_port:
                 detected = True
-                self.value += p.get_value(detected, self)
+                self._value += p.get_value(detected, self)
                 continue
             elif self._src_port == '-' or self._dest_port == '-':
                 detected = False
@@ -117,7 +139,7 @@ class Rule:
                 detected = False
             if self._network == '*' or self._network == p._network:
                 detected = True
-                self.value += p.get_value(detected, self)
+                self._value += p.get_value(detected, self)
                 continue
             elif self._network == '-':
                 detected = False
@@ -125,13 +147,13 @@ class Rule:
                 detected = False
             if self._transport == '*' or self._transport == p._transport:
                 detected = True
-                self.value += p.get_value(detected, self)
+                self._value += p.get_value(detected, self)
                 continue
             elif self._transport == '-':
                 detected = False
             else:
                 detected = False
-            self.value += p.get_value(detected, self)
+            self._value += p.get_value(detected, self)
 
     def evaluate_parameters(self):
         self._fpr = self._false_positive/(self._false_positive + self._true_negative)
@@ -163,6 +185,7 @@ class Rule:
         elif type == 3:
             self._dest_port = random.choice([self._dest_port, '*', '-'])
             self._src_port = random.choice([self._src_port, '*', '-'])
+        return copy.deepcopy(self)
 
     def crossover(self, other, type):
         first = copy.deepcopy(self)
@@ -234,10 +257,17 @@ class Rule:
             second._dest_port = tmp_dest_port
             return [first, second]
 
+    def clear_values(self):
+        self._value = 0
+        self._true_positive = 0
+        self._true_negative = 0
+        self._false_positive = 0
+        self._false_negative = 0
+
 def get_max(list):
     max = list[0]
     for r in list:
-        if r._value > max:
+        if r > max:
             max = r
     return max
 
@@ -245,49 +275,67 @@ def get_max(list):
 def generate_initial_rules(population_size):
     act_num_of_rules = 0
     population = []
-    while (act_num_of_rules <= population_size):
-        ip_first = ''
-        ip_second = ''
-        ip_third = ''
-        ip_fourth = ''
-        ip_first = random.choice(ip_addr_set)
-        if(ip_first == '*'):
-            ip_second = '*'
-            ip_third = '*'
-            ip_fourth = '*'
-        else:
-            ip_second = random.choice(ip_addr_set)
-        if(ip_second == '*'):
-            ip_third = '*'
-            ip_fourth = '*'
-        else:
-            ip_third = random.choice(ip_addr_set)
-        if(ip_third == '*'):
-            ip_fourth = '*'
-        else:
-            ip_fourth = random.choice(ip_addr_set)
-        _ip_src = ip_first + '.' + ip_second + '.' + ip_third + '.' + ip_fourth
-        ip_first = ''
-        ip_second = ''
-        ip_third = ''
-        ip_fourth = ''
-        ip_first = random.choice(ip_addr_set)
-        if(ip_first == '*'):
-            ip_second = '*'
-            ip_third = '*'
-            ip_fourth = '*'
-        else:
-            ip_second = random.choice(ip_addr_set)
-        if(ip_second == '*'):
-            ip_third = '*'
-            ip_fourth = '*'
-        else:
-            ip_third = random.choice(ip_addr_set)
-        if(ip_third == '*'):
-            ip_fourth = '*'
-        else:
-            ip_fourth = random.choice(ip_addr_set)
-        _ip_dest = ip_first + '.' + ip_second + '.' + ip_third + '.' + ip_fourth
+    while (act_num_of_rules < population_size):
+        # ip_first = ''
+        # ip_second = ''
+        # ip_third = ''
+        # ip_fourth = ''
+        # ip_first = random.choice(ip_addr_set)
+        # if(ip_first == '*'):
+        #     ip_second = '*'
+        #     ip_third = '*'
+        #     ip_fourth = '*'
+        # else:
+        #     ip_second = random.choice(ip_addr_set)
+        # if(ip_second == '*'):
+        #     ip_third = '*'
+        #     ip_fourth = '*'
+        # else:
+        #     ip_third = random.choice(ip_addr_set)
+        # if(ip_third == '*'):
+        #     ip_fourth = '*'
+        # else:
+        #     ip_fourth = random.choice(ip_addr_set)
+        ip_src = ['', '', '', '']
+        for p in range(0, 4):
+            choice = random.choice(ip_addr_set)
+            if choice == '*':
+                for j in range(p, len(ip_src)):
+                    ip_src[j] = '*'
+                break
+            else:
+                ip_src[p] = choice
+        _ip_src = ip_src[0] + '.' + ip_src[1] + '.' + ip_src[2] + '.' + ip_src[3]
+        # ip_first = ''
+        # ip_second = ''
+        # ip_third = ''
+        # ip_fourth = ''
+        # ip_first = random.choice(ip_addr_set)
+        # if(ip_first == '*'):
+        #     ip_second = '*'
+        #     ip_third = '*'
+        #     ip_fourth = '*'
+        # else:
+        #     ip_second = random.choice(ip_addr_set)
+        # if(ip_second == '*'):
+        #     ip_third = '*'
+        #     ip_fourth = '*'
+        # else:
+        #     ip_third = random.choice(ip_addr_set)
+        # if(ip_third == '*'):
+        #     ip_fourth = '*'
+        # else:
+        #     ip_fourth = random.choice(ip_addr_set)
+        ip_dest = ['', '', '', '']
+        for p in range(0,4):
+            choice = random.choice(ip_addr_set)
+            if choice == '*':
+                for j in range(p, len(ip_dest)):
+                    ip_dest[j] = '*'
+                break
+            else:
+                ip_dest[p] = choice
+        _ip_dest = ip_dest[0] + '.' + ip_dest[1] + '.' + ip_dest[2] + '.' + ip_dest[3]
         new_rule = Rule(ip_src=_ip_src, ip_dest= _ip_dest, \
                         dest_port= random.choice(port_set), \
                         src_port=random.choice(port_set), \

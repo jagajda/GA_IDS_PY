@@ -20,7 +20,7 @@
 	[
 		{
 			"name" : "population_size",
-			"value" : "40"
+			"value" : "50"
 		},
 		{
 			"name" : "max_lifetime",

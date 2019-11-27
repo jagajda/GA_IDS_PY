@@ -1,4 +1,5 @@
 import random, copy
+import numpy as np
 from Rule import *
 
 class Population:
@@ -20,12 +21,12 @@ class Population:
         _str += str(len(self._next_generation)) + '\n'
         return _str
 
-    def validate(self):
+    def validate(self, packet_list):
         for r in self._rule_list:
-            r.validate()
+            r.validate(packet_list)
 
     def cross_selection(self, configuration):
-        number_of_crossover = int(configuration._population_size * configuration._crossover_percentage/100)
+        number_of_crossover = int(configuration._population_size * (configuration._crossover_percentage/100))
         act_num = 0
         while(act_num < number_of_crossover):
             tournament_list = []
@@ -41,20 +42,21 @@ class Population:
             act_num += 1
 
     def mutation_selection(self, configuration):
-        number_of_mutation = int(configuration._population_size * configuration._mutation_percentage/100)
+        number_of_mutation = int(configuration._population_size * (configuration._mutation_percentage/100))
         act_num = 0
         while(act_num < number_of_mutation):
             chosen = copy.deepcopy(random.choice(self._rule_list))
             self._mutation_list.append(chosen)
+            act_num += 1
 
     def crossover(self, configuration):
-        [a, b] = split(self._cross_list, 2)
-        number_of_crossover = int(configuration._population_size * configuration._crossover_percentage / 100)
+        [a, b] = np.array_split(self._cross_list, 2)
+        number_of_crossover = int(configuration._population_size * (configuration._crossover_percentage / 100))
         act_num = 0
         while(act_num < number_of_crossover):
             first = random.choice(a)
             second = random.choice(b)
-            result = first.Rule.crossover(second)
+            result = first.crossover(second, random.randint(1, 10))
             self._next_generation.append(result[0])
             self._next_generation.append(result[1])
             act_num += 1
@@ -62,18 +64,17 @@ class Population:
 
     def mutation(self):
         for r in self._mutation_list:
-            r.Rule.mutation()
-            self._next_generation.append(r)
+            cp = copy.deepcopy(r)
+            self._next_generation.append(cp.mutation(random.randint(1,3)))
 
     def preserve_elite(self, configuration):
-        elite_size = int(configuration._population_size * configuration._mutation_percentage/100)
+        elite_size = int(configuration._population_size * (configuration._mutation_percentage/100))
         self._rule_list.sort(key=lambda x: x._value, reverse=True)
         self._next_generation = self._rule_list[:elite_size]
 
-    def update_current_population(self):
-        self._rule_list.clear()
-        self._rule_list = self._next_generation
-        self._next_generation.clear()
+    def update_current_population(self, configuration):
+        self._rule_list = self._next_generation[:configuration._population_size]
+        self._rule_list.sort(key=lambda x: x._value, reverse=True)
 
     def get_best_rule(self):
         self._rule_list.sort(key=lambda  x: x._value, reverse=True)
@@ -82,6 +83,9 @@ class Population:
     def generate_initial_population(self, rule_list):
         self._rule_list = rule_list
 
+    def sort_rules(self):
+        self._rule_list.sort(key=lambda  x: x._value, reverse=True)
+
     def print_best_rule(self):
         print(self._rule_list[0])
 
@@ -89,6 +93,12 @@ class Population:
         for r in self._rule_list:
             print(r)
 
-def split(l, n):
-    n = max(1, n)
-    return (l[i:i+n] for i in range(0, len(l), n))
+    def clear_values(self):
+        for r in self._rule_list:
+            r.clear_values()
+
+    def remove_duplicates(self):
+        self._rule_list = list(set(self._rule_list))
+# def split(l, n):
+#     n = max(1, n)
+#     return list(l[i:i+n] for i in range(0, len(l), n))
