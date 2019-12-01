@@ -3,7 +3,7 @@
 		{
 			"name" : "number of iterations",
 			"valid" : "True",
-			"value" : "100"
+			"value" : "50"
 		},
 		{
 			"name" : "length",
@@ -12,7 +12,7 @@
 		},
 		{
 			"name" : "diff",
-			"valid" : "True",
+			"valid" : "False",
 			"value" : "10"
 		}
 	],
@@ -20,7 +20,7 @@
 	[
 		{
 			"name" : "population_size",
-			"value" : "50"
+			"value" : "100"
 		},
 		{
 			"name" : "max_lifetime",
@@ -32,7 +32,7 @@
 		},
 		{
 			"name" : "mutation",
-			"value" : "10"
+			"value" : "30"
 		},
 		{
 			"name" : "tournament_size",
@@ -40,7 +40,7 @@
 		},
 		{
 			"name" : "elite",
-			"value" : "30"
+			"value" : "10"
 		}
 	],
 "attacks":

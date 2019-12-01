@@ -42,16 +42,16 @@ class Packet:
     def get_value(self, detected, rule):
         if detected == True and self._attack == True:
             rule._true_positive += 1
-            return 100
+            return 30.0
         elif detected == True and self._attack == False:
             rule._false_positive += 1
-            return -5
+            return -5.0
         elif detected == False and self._attack == True:
             rule._false_negative += 1
-            return -10
+            return -10.0
         else:
             rule._true_negative += 1
-            return 5
+            return 1.0
 
 def get_packets_from_file(packet_filename):
     packet_list =[]
@@ -72,9 +72,25 @@ def get_packets_from_file(packet_filename):
     return packet_list
 
 def update_attacks(packet_list, packets_from_conf_file):
-    for attack in packets_from_conf_file:
-        for p in packet_list:
+    # for attack in packets_from_conf_file:
+    #     for p in packet_list:
+    #         if p == attack:
+    #             p._attack = True
+    #         else:
+    #             p._attack = False
+    for p in packet_list:
+        for attack in packets_from_conf_file:
             if p == attack:
                 p._attack = True
+                break
             else:
                 p._attack = False
+
+def get_attacks_num(packet_list):
+    attacks = 0
+    for p in packet_list:
+        if p._attack:
+            attacks += 1
+        else:
+            pass
+    return attacks

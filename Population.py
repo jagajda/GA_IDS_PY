@@ -1,5 +1,6 @@
 import random, copy
 import numpy as np
+import matplotlib.pyplot as plt
 from Rule import *
 
 class Population:
@@ -77,8 +78,9 @@ class Population:
         self._rule_list.sort(key=lambda x: x._value, reverse=True)
 
     def get_best_rule(self):
-        self._rule_list.sort(key=lambda  x: x._value, reverse=True)
-        return self._rule_list[0]
+        cp = copy.deepcopy(self._rule_list)
+        cp.sort(key=lambda x: x._value, reverse=True)
+        return cp[0]
 
     def generate_initial_population(self, rule_list):
         self._rule_list = rule_list
@@ -87,7 +89,9 @@ class Population:
         self._rule_list.sort(key=lambda  x: x._value, reverse=True)
 
     def print_best_rule(self):
-        print(self._rule_list[0])
+        cp =copy.deepcopy(self._rule_list)
+        cp.sort(key= lambda x: x._value, reverse= True)
+        print(cp[0])
 
     def print_rule_list(self):
         for r in self._rule_list:
@@ -99,6 +103,43 @@ class Population:
 
     def remove_duplicates(self):
         self._rule_list = list(set(self._rule_list))
-# def split(l, n):
-#     n = max(1, n)
-#     return list(l[i:i+n] for i in range(0, len(l), n))
+
+def create_graphs(best_rule_list):
+    value_list = []
+    tp_list = []
+    tn_list = []
+    fp_list = []
+    fn_list = []
+    acc_list = []
+    prec_list =[]
+    for r in best_rule_list:
+        r.evaluate_parameters()
+        value_list.append(r._value)
+        tp_list.append(r._tpr)
+        tn_list.append(r._tnr)
+        fn_list.append(r._fnr)
+        fp_list.append(r._fpr)
+        acc_list.append(r._accuracy)
+        prec_list.append(r._precision)
+    iterations = [i for i in range(0, len(best_rule_list))]
+    plt.figure(1)
+    plt.plot(iterations, value_list)
+    plt.show()
+    plt.figure(2)
+    plt.plot(iterations, tp_list)
+    plt.show()
+    plt.figure(3)
+    plt.plot(iterations, tn_list)
+    plt.show()
+    plt.figure(4)
+    plt.plot(iterations, fp_list)
+    plt.show()
+    plt.figure(5)
+    plt.plot(iterations, fn_list)
+    plt.show()
+    plt.figure(6)
+    plt.plot(iterations, prec_list)
+    plt.show()
+    plt.figure(7)
+    plt.plot(iterations, acc_list)
+    plt.show()

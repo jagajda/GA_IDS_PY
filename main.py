@@ -8,6 +8,8 @@ input_filename = 'packets.log'
 
 def main():
     # parsing configuration file
+    iter = 0
+    best_rules = []
     try:
         _configuration = Configuration()
         _configuration.get_conf_from_file(conf_filename)
@@ -21,31 +23,25 @@ def main():
     except Exception as e:
         print(e)
     print('Packets number= ' + str(len(packets)) + '\n')
-    # initializing first population
+    print('Attacks number= ' + str(get_attacks_num(packets)) + '\n')
     _population = Population()
     _population._rule_list = generate_initial_rules(_configuration._population_size)
     _population.validate(packets)
-    print(str(len(_population._rule_list)))
-    _population.cross_selection(_configuration)
-    print(str(len(_population._rule_list)))
-    _population.mutation_selection(_configuration)
-    print(str(len(_population._rule_list)))
-    _population.preserve_elite(_configuration)
-    print(str(len(_population._rule_list)))
-    _population.crossover(_configuration)
-    print(str(len(_population._rule_list)))
-    _population.mutation()
-    print(str(len(_population._rule_list)))
-    _population.update_current_population(_configuration)
-    print(str(len(_population._rule_list)))
-    #_population.remove_duplicates()
-    _population.clear_values()
-    print(str(len(_population._rule_list)))
-    _population.validate(packets)
-    print(str(len(_population._rule_list)))
-    _population.sort_rules()
-    _population.print_rule_list()
-    _population.print_best_rule()
-
+    while(_configuration.calculate_conditions(iterations=iter, diff_between_solutions=0, length_between_solutions=0)):
+        _population.cross_selection(_configuration)
+        _population.mutation_selection(_configuration)
+        _population.preserve_elite(_configuration)
+        _population.crossover(_configuration)
+        _population.mutation()
+        _population.update_current_population(_configuration)
+        _population.clear_values()
+        _population.validate(packets)
+        _population.print_best_rule()
+        best_rules.append(_population.get_best_rule())
+        iter += 1
+    # _population.sort_rules()
+    # # _population.print_rule_list()
+    # _population.print_best_rule()
+    create_graphs(best_rules)
 if __name__ == '__main__':
     main()

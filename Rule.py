@@ -156,10 +156,22 @@ class Rule:
             self._value += p.get_value(detected, self)
 
     def evaluate_parameters(self):
-        self._fpr = self._false_positive/(self._false_positive + self._true_negative)
-        self._fnr = self._false_negative/(self._false_negative + self._true_positive)
-        self._tpr = self._true_positive/(self._true_positive + self._false_negative)
-        self._tnr = self._true_negative/(self._true_negative + self._false_positive)
+        try:
+            self._fpr = self._false_positive/(self._false_positive + self._true_negative)
+        except ZeroDivisionError:
+            self._fpr = 0
+        try:
+            self._fnr = self._false_negative / (self._false_negative + self._true_positive)
+        except ZeroDivisionError:
+            self._fnr = 0
+        try:
+            self._tpr = self._true_positive / (self._true_positive + self._false_negative)
+        except ZeroDivisionError:
+            self._tpr = 0
+        try:
+            self._tnr = self._true_negative / (self._true_negative + self._false_positive)
+        except ZeroDivisionError:
+            self._tnr = 0
         self._accuracy = (self._true_positive + self._true_negative) / (self._true_positive + self._true_negative  + self._false_positive + self._false_negative)
         self._precision = self._true_positive / (self._true_positive + self._false_positive)
 
@@ -190,7 +202,7 @@ class Rule:
     def crossover(self, other, type):
         first = copy.deepcopy(self)
         second = copy.deepcopy(self)
-        if 1 <= type <= 7:
+        if 1 <= type <= 3:
             ip_src1 = self._ip_src.split('.')
             ip_src2 = other._ip_src.split('.')
             tmp = ip_src1
